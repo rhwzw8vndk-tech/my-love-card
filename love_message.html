@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Secret Animated Reel For You</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* General styling for the full-screen container */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fce4ec; /* Light Pink Background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        /* Card container - Tall and vertical like a reel/story */
+        .card-container {
+            width: 100%;
+            max-width: 450px; 
+            height: 90vh; /* Make it nearly full screen height on mobile */
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            padding: 30px;
+            text-align: center;
+        }
+        /* Individual Page Styles */
+        .page {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 30px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .page.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #d81b60; /* Deep Pink */
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        .instruction-text {
+            color: #4a4a4a;
+            margin-bottom: 30px;
+        }
+        /* Button Style */
+        button {
+            background-color: #d81b60;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 5px 15px rgba(216, 27, 96, 0.4);
+            margin-top: 20px;
+            width: 100%;
+            max-width: 250px;
+        }
+        button:hover {
+            background-color: #c2185b;
+            transform: translateY(-1px);
+        }
+        /* Input Field Styling */
+        #passcode-input {
+            width: 80%;
+            max-width: 250px;
+            padding: 12px;
+            border: 2px solid #ff69b4;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        #passcode-input:focus {
+            border-color: #d81b60;
+        }
+        /* Reel Content Styling */
+        .reel-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            text-align: center;
+        }
+        .reel-line {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+            margin: 15px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInSlide 0.5s ease-out forwards;
+            line-height: 1.4;
+            max-width: 100%;
+        }
+        .reel-highlight {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #d81b60;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .reel-signature {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #d81b60;
+            margin-top: 40px;
+        }
+
+        /* Keyframe animation for text appearance */
+        @keyframes fadeInSlide {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .flower-icon {
+            font-size: 4rem;
+            color: #ffb74d; 
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+
+        <!-- === Page 1: Introduction and Start Button === -->
+        <div id="page-1" class="page active">
+            <p class="flower-icon">💖</p>
+            <h1 class="section-title">A Secret Reel Just For You!</h1>
+            <p class="instruction-text">Tap the button to unlock the animated message I've prepared.</p>
+            <button onclick="showPage('page-2')">Start</button>
+        </div>
+
+        <!-- === Page 2: The Passcode Lock (Passcode: 0414) === -->
+        <div id="page-2" class="page">
+            <h2 class="section-title">Secret Code Required</h2>
+            <p class="instruction-text">Enter the special code to continue.</p>
+            <!-- Input set to tel to bring up a number keypad on iPhone -->
+            <input type="tel" id="passcode-input" placeholder="Your Code Here" maxlength="4" style="padding: 10px; border: 1px solid #ff69b4; border-radius: 5px; text-align: center; margin: 15px 0;">
+            <button onclick="checkPasscode()">Unlock</button>
+        </div>
+
+        <!-- === Page 3: The Animated Reel Message (UNLOCKED) === -->
+        <div id="page-3" class="page">
+            <div class="reel-content">
+                <h2 class="section-title mb-8">Tap to Play ➡️</h2>
+                <div id="message-container">
+                    <!-- Message lines will be dynamically inserted here with animation delays -->
+                </div>
+            </div>
+            <button onclick="playReel()" class="mt-6 w-full max-w-[200px]" id="play-button">Replay Reel</button>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC GOES HERE -->
+    <script>
+        // Set your secret passcode here!
+        const SECRET_CODE = "0414"; 
+
+        // The sequence of messages for the reel
+        const reelMessages = [
+            "I know I've been a handful sometimes,",
+            "but I just wanted to remind you how incredibly much you mean to me.",
+            "You are my sunshine,",
+            "my best friend,",
+            "and the reason I smile every single day.",
+            "This little card is a small gesture",
+            "to show you that no matter what,",
+            "my love for you is constant and unwavering.",
+            "<span class='reel-highlight'>You light up my world.</span>",
+            "I love every single thing about you."
+        ];
+
+        // --- Core Page Navigation ---
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            // If the message page is activated, clear the old message
+            if (pageId === 'page-3') {
+                document.getElementById('message-container').innerHTML = '';
+                document.getElementById('play-button').textContent = "Tap to Play";
+            }
+        }
+
+        // --- Passcode Logic ---
+
+        function checkPasscode() {
+            const userInput = document.getElementById('passcode-input').value.trim();
+            const correctCode = SECRET_CODE;
+
+            if (userInput === correctCode) {
+                // IMPORTANT: Using alert() here as a confirmation, then moving to the next page.
+                alert("Access Granted! Now tap 'Play' to watch the reel."); 
+                setTimeout(() => {
+                    showPage('page-3');
+                }, 100);
+            } else {
+                alert("Access Denied. Try again!");
+                document.getElementById('passcode-input').value = "";
+            }
+        }
+
+        // --- Reel Animation Logic ---
+
+        function playReel() {
+            const container = document.getElementById('message-container');
+            const playButton = document.getElementById('play-button');
+            container.innerHTML = '';
+            
+            // Disable button during playback
+            playButton.textContent = "Playing...";
+            playButton.disabled = true;
+
+            let delay = 0.5; // Initial delay before first line appears
+
+            reelMessages.forEach((message, index) => {
+                const line = document.createElement('p');
+                line.className = 'reel-line';
+                line.innerHTML = message;
+                
+                // Apply increasing animation delay to each line
+                line.style.animationDelay = `${delay}s`;
+                container.appendChild(line);
+
+                // Increase delay for the next line
+                delay += 1.5; // 1.5 seconds delay between lines for a dramatic effect
+            });
+
+            // Add the signature after the messages finish
+            setTimeout(() => {
+                const signature = document.createElement('p');
+                signature.className = 'reel-line reel-signature';
+                signature.style.animationDelay = `${delay + 1}s`;
+                signature.innerHTML = "Always and Forever, <br> Your (Future) Life Partner 💖";
+                container.appendChild(signature);
+
+                // Final timer to re-enable the button
+                setTimeout(() => {
+                    playButton.textContent = "Replay Reel";
+                    playButton.disabled = false;
+                }, (delay + 3) * 1000); // Wait until the entire animation sequence is finished
+
+            }, 100); // Short delay to ensure lines are appended before starting animation
+        }
+        
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('page-1');
+            // This event listener allows the user to tap anywhere on the screen to start the reel
+            document.getElementById('page-3').addEventListener('click', (e) => {
+                if (e.target.id !== 'play-button') {
+                     if (document.getElementById('play-button').disabled === false) {
+                        playReel();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
